@@ -2,8 +2,8 @@
   "program": "token_intern_unique_lama.aleo",
   "version": "0.1.0",
   "description": "",
-  "license": "MIT",
+  "license": "",
   "leo": "3.1.0",
-  "dependencies": [],
+  "dependencies": null,
   "dev_dependencies": null
 }

@@ -1,5 +1,5 @@
-import credits.aleo;
-program token_intern_Unique_Lama.aleo {
+// import credits.aleo;
+program token_intern_unique_lama.aleo {
     // for upgrade
     @noupgrade
     async constructor() {}
@@ -57,8 +57,30 @@ program token_intern_Unique_Lama.aleo {
 
     //The function transfer_public sends token amount to receiver from sender publicly
     //async as it need to write in blockchain
-    async transition transfer_public(to:address, from:address, amount: u64)-> Future{
-        return credits.aleo/transfer_public(from,to,amount);
+    // async transition transfer_public(sender:address, receiver:address, amount: u64)-> Future{
+    //     return credits.aleo/transfer_public(sender,receiver,amount);
+    // }
+
+    
+    async transition transfer_public(sender:Token, public receiver:address,public amount:u64)->(Token,Token,Future){
+        assert(sender.amount>amount);
+        let new_sender_Token:Token = Token{
+            owner:sender.owner,
+            amount:sender.amount - amount,
+        };
+        let new_receiver_Token:Token = Token{
+            owner:receiver,
+            amount:amount,
+        };
+        return (new_sender_Token,new_receiver_Token,finalize_transfer_public(sender.owner,receiver,amount));
     }
+
+    async function finalize_transfer_public(sender:address, receiver:address, amount:u64){
+        let sender_balance = Mapping::get_or_use(account,sender,0u64);
+        let receiver_balance = Mapping::get_or_use(account,receiver,0u64);
+        Mapping::set(account,sender,sender_balance-amount);
+        Mapping::set(account,receiver,receiver_balance+amount);
+    }
+    
 
 }
