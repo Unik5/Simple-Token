@@ -6,7 +6,8 @@ program token_intern_unique_lama.aleo {
 
     // On-chain storage of an `account` map, with `address` as the key,
     // and `u64` as the value.
-    mapping account: address => u64;
+    mapping account: address => u64; //public
+    //Private
     record Token {
     // The token owner.
         owner: address,
@@ -16,9 +17,13 @@ program token_intern_unique_lama.aleo {
 
     /* Mint */
     // The function `mint_public` issues the specified token amount for the token receiver publicly on the network.
-    async transition mint_public(public receiver: address, public amount: u64) -> Future {
+    async transition mint_public(public receiver: address, public amount: u64) -> (Token,Future) {
+        let mint:Token= Token {
+            owner:receiver,
+            amount:amount,
+        };
         // Mint the tokens publicly by invoking the computation on-chain.
-        return finalize_mint_public(self.caller, amount);
+        return (mint,finalize_mint_public(receiver, amount));
     }
     async function finalize_mint_public(public receiver: address, public amount: u64) {
         // Increments `account[receiver]` by `amount`.
@@ -27,6 +32,7 @@ program token_intern_unique_lama.aleo {
         let current_amount: u64 = Mapping::get_or_use(account, receiver, 0u64);
         Mapping::set(account, receiver, current_amount + amount);
     }
+    
     // The function `mint_private` initializes a new record with the specified amount of tokens for the receiver.
     transition mint_private(receiver: address, amount: u64) -> Token {
         return Token {
@@ -62,7 +68,7 @@ program token_intern_unique_lama.aleo {
     // }
 
     
-    async transition transfer_public(sender:Token, public receiver:address,public amount:u64)->(Token,Token,Future){
+    async transition transfer_public(public sender:Token, public receiver:address,public amount:u64)->(Token,Token,Future){
         assert(sender.amount>amount);
         let new_sender_Token:Token = Token{
             owner:sender.owner,
@@ -72,11 +78,12 @@ program token_intern_unique_lama.aleo {
             owner:receiver,
             amount:amount,
         };
-        return (new_sender_Token,new_receiver_Token,finalize_transfer_public(sender.owner,receiver,amount));
+        return (new_sender_Token,new_receiver_Token,finalize_transfer_public(new_sender_Token.owner,receiver,amount));
     }
 
-    async function finalize_transfer_public(sender:address, receiver:address, amount:u64){
+    async function finalize_transfer_public(public sender:address,public receiver:address,public amount:u64){
         let sender_balance = Mapping::get_or_use(account,sender,0u64);
+        assert(sender_balance>amount);
         let receiver_balance = Mapping::get_or_use(account,receiver,0u64);
         Mapping::set(account,sender,sender_balance-amount);
         Mapping::set(account,receiver,receiver_balance+amount);
