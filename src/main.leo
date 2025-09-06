@@ -61,33 +61,37 @@ program token_intern_unique_lama.aleo {
         return (remaining, transferred);
     }
 
-    //The function transfer_public sends token amount to receiver from sender publicly
+    // The function transfer_public sends token amount to receiver from sender publicly using credits.aleo
     //async as it need to write in blockchain
     // async transition transfer_public(sender:address, receiver:address, amount: u64)-> Future{
     //     return credits.aleo/transfer_public(sender,receiver,amount);
     // }
 
-    
+
+    // transfer_public function manually
+    // this transition generates new records for both the sender and the receiver.
     async transition transfer_public(public sender:Token, public receiver:address,public amount:u64)->(Token,Token,Future){
-        assert(sender.amount>amount);
+        assert(sender.amount>amount); // check if the sender has enough amount 
+        // new sender record
         let new_sender_Token:Token = Token{
             owner:sender.owner,
             amount:sender.amount - amount,
         };
+        // new receiver record
         let new_receiver_Token:Token = Token{
             owner:receiver,
             amount:amount,
         };
-        return (new_sender_Token,new_receiver_Token,finalize_transfer_public(new_sender_Token.owner,receiver,amount));
+        return (new_sender_Token,new_receiver_Token,finalize_transfer_public(new_sender_Token.owner,receiver,amount)); // returns the new record and a future
     }
 
+    // Future that updates the balances for the sender and receiver on the blockchain.
     async function finalize_transfer_public(public sender:address,public receiver:address,public amount:u64){
-        let sender_balance = Mapping::get_or_use(account,sender,0u64);
-        assert(sender_balance>amount);
-        let receiver_balance = Mapping::get_or_use(account,receiver,0u64);
-        Mapping::set(account,sender,sender_balance-amount);
+        let sender_balance = Mapping::get_or_use(account,sender,0u64); //obtain senders balance from the mapping(blockchain)
+        assert(sender_balance>amount); // check if the sender has enough balance
+        let receiver_balance = Mapping::get_or_use(account,receiver,0u64); // obtain receivers balance , if not found then create a mapping with 0 balance
+        // update the new balance
+        Mapping::set(account,sender,sender_balance-amount); 
         Mapping::set(account,receiver,receiver_balance+amount);
     }
-    
-
 }
