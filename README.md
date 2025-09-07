@@ -1,4 +1,4 @@
-The Steps :
+# Steps taken for Token Deployment
 
 #### 1. Setting Up Local Environment
 
@@ -34,6 +34,28 @@ A `test_token_intern_unique_lama.aleo` file was created where unit tests were ca
 ![sucessful_tests_result](./Readme_Assets/tests_result.png "sucessful_tests_result")
 
 #### 5. Deploy
+
+For Deployment, `leo deploy --print --broadcast` was used. The values like NETWORK, PRIVATE_KEY and ENDPOINT were set in .env file. A bug where the public balances were not being updated in the explorer but were synced from the wallets effected the deployment of this program to the Aleo Testnet.
+
+##### Some Screenshots:
+
+###### 1. Public Balance in the wallet(Leo Wallet)
+
+![Wallet_Balance](./Readme_Assets/Leo_Wallet_Public_Balance.png)
+
+###### 2. Public Balance in the Provable explorer
+
+![Explorer_Balance](./Readme_Assets/Provable_Explorer_Public_Credit.png)
+
+###### 3. Credit Cost Breakdown
+
+![Credit_Costs](./Readme_Assets/Credit_Cost.png)
+
+###### 4. Deployment/Broadcasting Error
+
+![Deployment_Error](./Readme_Assets/Broadcast_Error.png)
+
+# Questions Regarding Zero Knowledge Proofs.
 
 ## 1. What is a zero-knowledge proof (ZKP)?
 
