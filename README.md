@@ -35,7 +35,7 @@ A `test_token_intern_unique_lama.aleo` file was created where unit tests were ca
 
 #### 5. Deploy
 
-For Deployment, `leo deploy --print --broadcast` was used. The values like NETWORK, PRIVATE_KEY and ENDPOINT were set in .env file. A bug where the public balances were not being updated in the explorer but were synced from the wallets effected the deployment of this program to the Aleo Testnet.
+For Deployment, `leo deploy --print --broadcast` was used. The values like NETWORK, PRIVATE_KEY and ENDPOINT were set in .env file. A bug where the public balances were not being updated in the explorer but were synced from the wallets effected the deployment of this program to the Aleo Testnet. (Fixed and Deployed)
 
 ##### Some Screenshots:
 
@@ -54,6 +54,11 @@ For Deployment, `leo deploy --print --broadcast` was used. The values like NETWO
 ###### 4. Deployment/Broadcasting Error
 
 ![Deployment_Error](./Readme_Assets/Broadcast_Error.png)
+
+###### Update: Balanced Has Been Fixed and the Program is Sucessfully Deployed
+
+Transaction Hash: at1p2h3v2pssy5f6m8pzwdnd9fz8nyw3dnsphr4sn4w4ake0te78gysrkq5hw
+Explorer Link: https://testnet.explorer.provable.com/program/token_intern_unique_lama.aleo
 
 # Questions Regarding Zero Knowledge Proofs.
 
